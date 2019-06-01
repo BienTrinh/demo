@@ -8,7 +8,7 @@ def notifyBuild(String buildStatus = 'STARTED'){
     def subject_full = "${buildStatus}: Job <${env.BUILD_URL}/console|${env.JOB_NAME} [${env.BUILD_NUMBER}]>"
     def colorName = 'good'
     def slackChannelName = '#demo'
-    def project_key = 'com.trustingsocial.trustvision.demo'
+    def project_key = 'com.trustingsocial.BienTrinh.demo'
 
     // Override default values based on build status
 
