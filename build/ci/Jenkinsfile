@@ -53,6 +53,7 @@ node {
                 println TEST_EXIT_CODE
                 assert TEST_EXIT_CODE == '0'
             } catch (AssertionError e) {
+                currentBuild.result = "FAILED"
                 throw e
             } finally {
                 sh("docker-compose -p  ${repoTag} -f build/docker/docker-compose.yml down -v --rmi local")
