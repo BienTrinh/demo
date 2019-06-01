@@ -1,17 +1,6 @@
 linters:
   enable:
-    - golint
     - stylecheck
-    - gosec
-    - interfacer
-    - unconvert
-    - goconst
-    - gofmt
-    - maligned
-    - depguard
-    - nakedret
-    - scopelint
-    - gocritic
 
 linters-settings:
   golint:
