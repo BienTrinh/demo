@@ -9,5 +9,6 @@ func main() {
 			"message": "pong",
 		})
 	})
-	r.Run(0.0.0.0:1982)
+
+	r.Run(":1982")
 }
