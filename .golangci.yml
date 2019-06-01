@@ -1,0 +1,20 @@
+linters:
+  enable:
+    - golint
+    - stylecheck
+    - gosec
+    - interfacer
+    - unconvert
+    - goconst
+    - gofmt
+    - maligned
+    - depguard
+    - nakedret
+    - scopelint
+    - gocritic
+
+linters-settings:
+  golint:
+    min-confidence: 0
+  maligned:
+    suggest-new: true
