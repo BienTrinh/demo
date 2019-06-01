@@ -1,5 +1,6 @@
 sonarToken = ""
 sonarHost  = ""
+currentBuild.result = ""
 
 def notifyBuild(String buildStatus = 'STARTED'){
     buildStatus = buildStatus ?: 'SUCCESSFUL'
@@ -50,8 +51,8 @@ node {
                 sh("docker-compose -p  ${repoTag} -f build/docker/docker-compose.yml up --build -d")
                 def TEST_EXIT_CODE = sh(script: "docker wait  ${repoTag}_app_1", returnStdout: true).trim()
                 sh("docker logs  ${repoTag}_app_1")
-                println TEST_EXIT_CODE
-                if (TEST_EXIT_CODE == 1) {
+
+                if (TEST_EXIT_CODE == "1") {
                     currentBuild.result = "FAILED"
                 }
             } catch (AssertionError e) {
@@ -61,7 +62,6 @@ node {
                 sh("docker-compose -p  ${repoTag} -f build/docker/docker-compose.yml down -v --rmi local")
             }
         }
-
     }
     catch (AssertionError e){
         currentBuild.result = "FAILED"

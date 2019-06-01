@@ -3,5 +3,5 @@ services:
   app:
     build:
       context: ..
-      dockerfile: build/ci/Dockerfile
-    command: sh -c "./docker/test.sh"
+      dockerfile: build/docker/Dockerfile
+    command: sh -c "./build/docker/test.sh"
