@@ -9,5 +9,5 @@ func main() {
 			"message": "pong",
 		})
 	})
-	r.Run(:1982) // listen and serve on 0.0.0.0:1982
+	r.Run(0.0.0.0:1982)
 }
