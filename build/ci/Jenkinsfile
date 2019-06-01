@@ -51,7 +51,9 @@ node {
                 def TEST_EXIT_CODE = sh(script: "docker wait  ${repoTag}_app_1", returnStdout: true).trim()
                 sh("docker logs  ${repoTag}_app_1")
                 println TEST_EXIT_CODE
-                assert TEST_EXIT_CODE == '0'
+                if (TEST_EXIT_CODE == '1') {
+                    currentBuild.result = "FAILED"
+                }
             } catch (AssertionError e) {
                 currentBuild.result = "FAILED"
                 throw e
