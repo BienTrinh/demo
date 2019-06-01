@@ -14,7 +14,7 @@ def notifyBuild(String buildStatus = 'STARTED'){
 
     switch (buildStatus){
         case ['STARTED']:
-            summary = subject_full.replaceAll("/console", "")
+            summary = subject_full.replaceAll("/console", "").replaceAll("%2F", "/")
             break
         case ['SUCCESSFUL']:
             coverage_rate = sh(script: "curl -s -u $sonarToken: '$sonarHost/api/badges/measure?key=${project_key}&metric=coverage' | sed -e 's/<[^>]*>//g;s/%/ /g' | cut -d ' ' -f2", returnStdout: true).trim()
