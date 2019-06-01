@@ -12,11 +12,11 @@ def notifyBuild(String buildStatus = 'STARTED') {
     // Override default values based on build status
     switch (buildStatus) {
         case ["STARTED"]:
-            summary = subject_full.replaceAll("/console", "").replaceAll("%2F", "/")
+            summary = subject_full.replaceAll("/console", "")
             break
         case ["SUCCESSFUL"]:
             coverage_rate = sh(script: "curl -s -u $sonarToken: '$sonarHost/api/badges/measure?key=${project_key}&metric=coverage' | sed -e 's/<[^>]*>//g;s/%/ /g' | cut -d ' ' -f2", returnStdout: true).trim()
-            summary = subject_full.replaceAll("/console", "").replaceAll("%2F", "/") + "\n *DEMO* - *PASSED* - _Code coverage *<${sonarHost}/dashboard?id=${project_key}|${coverage_rate}>*_ :tada:"
+            summary = subject_full.replaceAll("/console", "") + "\n *demo* - *PASSED* - _Code coverage *<${sonarHost}/dashboard?id=${project_key}|${coverage_rate}>*_ :tada:"
             break
         default:
             colorName = 'danger'
@@ -47,7 +47,7 @@ node {
         stage('Run tests') {
             try {
                 repoTag = composerTag.replaceAll("[-_./]", "")
-                sh("docker-compose -p  ${repoTag} -f docker/docker-compose.yml up --build -d")
+                sh("docker-compose -p  ${repoTag} -f build/docker/docker-compose.yml up --build -d")
                 def TEST_EXIT_CODE = sh(script: "docker wait  ${repoTag}_app_1", returnStdout: true).trim()
                 sh("docker logs  ${repoTag}_app_1")
                 println TEST_EXIT_CODE
@@ -55,7 +55,7 @@ node {
             } catch (AssertionError e) {
                 throw e
             } finally {
-                sh("docker-compose -p  ${repoTag} -f docker/docker-compose.yml down -v --rmi local")
+                sh("docker-compose -p  ${repoTag} -f build/docker/docker-compose.yml down -v --rmi local")
             }
         }
 
