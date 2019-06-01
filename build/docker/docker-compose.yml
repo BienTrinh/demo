@@ -4,4 +4,4 @@ services:
     build:
       context: ../..
       dockerfile: build/docker/Dockerfile
-    command: sh -c "./build/docker/test.sh"
+    command: sh -c "chmod 755 ./build/docker/test.sh && ./build/docker/test.sh"
