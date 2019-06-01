@@ -32,7 +32,7 @@ properties([[$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', 
 
 node {
     try {
-        def appName = 'tracing'
+        def appName = 'demo'
         def composerTag = "$appName${env.BRANCH_NAME}${env.BUILD_NUMBER}"
         def privateRegistry = 'docker-registry.trustingsocial.com'
 
