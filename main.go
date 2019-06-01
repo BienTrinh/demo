@@ -11,6 +11,6 @@ func main() {
 	})
 
 	if err := r.Run(":1982"); err != nil{
- 		panic(error)
+ 		panic(err)
 	}
 }
