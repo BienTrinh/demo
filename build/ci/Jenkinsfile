@@ -15,15 +15,13 @@ def notifyBuild(String buildStatus = 'STARTED'){
     switch (buildStatus){
         case ['STARTED']:
             summary = subject_full.replaceAll("/console", "").replaceAll("%2F", "/")
-            colorName = '#FF0000'
             break
         case ['SUCCESSFUL']:
             coverage_rate = sh(script: "curl -s -u $sonarToken: '$sonarHost/api/badges/measure?key=${project_key}&metric=coverage' | sed -e 's/<[^>]*>//g;s/%/ /g' | cut -d ' ' -f2", returnStdout: true).trim()
             summary = subject_full.replaceAll("/console", "") + "\n *DEMO* - *PASSED* - _Code coverage *<${sonarHost}/dashboard?id=${project_key}|${coverage_rate}>*_ :tada:"
-            colorName = '#FF0000'
             break
         default:
-            colorName = '#FF0000'
+            colorName = 'danger'
             summary = subject_full
     }
 
@@ -45,6 +43,21 @@ node {
             checkout scm
         }
 
+        // Run testing
+        stage('Run tests') {
+            try {
+                repoTag = composerTag.replaceAll("[-_./]", "")
+                sh("docker-compose -p  ${repoTag} -f build/docker/docker-compose.yml up --build -d")
+                def TEST_EXIT_CODE = sh(script: "docker wait  ${repoTag}_app_1", returnStdout: true).trim()
+                sh("docker logs  ${repoTag}_app_1")
+                println TEST_EXIT_CODE
+                assert TEST_EXIT_CODE == '0'
+            } catch (AssertionError e) {
+                throw e
+            } finally {
+                sh("docker-compose -p  ${repoTag} -f build/docker/docker-compose.yml down -v --rmi local")
+            }
+        }
 
     }
     catch (AssertionError e){
