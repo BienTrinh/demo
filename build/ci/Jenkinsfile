@@ -54,7 +54,7 @@ node {
         stage('Run tests') {
             for (deployServer in listConfigs.listDeployServers) {
                 sshagent(credentials: ['c6c0f077-6e37-4619-9938-faa1581d81ba']) {
-                    sh("ssh -o ProxyCommand='ssh -W %h:%p ts@${bastion}' ts@${deployServer} 'hostname'")
+                    sh("sudo ssh -o ProxyCommand='ssh -W %h:%p ts@${bastion}' ts@${deployServer} 'hostname'")
                 }
             }
         }
