@@ -34,6 +34,12 @@ node {
         def appName = 'demo'
         def composerTag = "$appName${env.BRANCH_NAME}${env.BUILD_NUMBER}"
         def privateRegistry = 'docker-registry.trustingsocial.com'
+        def bastion = '35.234.23.123'
+
+        def trustvision_testing_env = "4389588a-a188-4f00-ad0f-e1aa187440a5"
+        def listConfigs = configFileProvider([configFile(fileId: trustvision_testing_env, variable: 'fileConfigs')]) {
+            readJSON file: "${env.fileConfigs}";
+        }
 
         if (env.BRANCH_NAME.matches("master|release-.*")) {
             notifyBuild('STARTED')
@@ -46,20 +52,10 @@ node {
 
         // Run testing
         stage('Run tests') {
-            try {
-                repoTag = composerTag.replaceAll("[-_./]", "")
-                sh("docker-compose -p  ${repoTag} -f build/docker/docker-compose.yml up --build -d")
-                def TEST_EXIT_CODE = sh(script: "docker wait  ${repoTag}_app_1", returnStdout: true).trim()
-                sh("docker logs  ${repoTag}_app_1")
-
-                if (TEST_EXIT_CODE == "1") {
-                    currentBuild.result = "FAILED"
+            for (deployServer in listConfigs.listDeployServers) {
+                sshagent(credentials: ['c6c0f077-6e37-4619-9938-faa1581d81ba']) {
+                    sh("ssh -o ProxyCommand='ssh -W %h:%p ts@${bastion}' ts@${deployServer} 'hostname'")
                 }
-            } catch (AssertionError e) {
-                currentBuild.result = "FAILED"
-                throw e
-            } finally {
-                sh("docker-compose -p  ${repoTag} -f build/docker/docker-compose.yml down -v --rmi local")
             }
         }
     }
