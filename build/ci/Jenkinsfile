@@ -54,7 +54,7 @@ node {
         stage('Run tests') {
             for (deployServer in listConfigs.listDeployServers) {
                 sshagent(credentials: ['c6c0f077-6e37-4619-9938-faa1581d81ba']) {
-                    sh ("sudo ssh -o StrictHostKeyChecking=no -tt ts@${bastion} ssh -o StrictHostKeyChecking=no -tt ts@${deployServer} 'sudo touch -p /tmp/test'")
+                    sh ("ssh -i /opt/keys/tv_id_rsa.pem -o StrictHostKeyChecking=no -tt ts@${bastion} ssh -o StrictHostKeyChecking=no -tt ts@${deployServer} 'sudo touch -p /tmp/test'")
                 }
             }
         }
